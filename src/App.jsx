@@ -1,8 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./style.css";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const closePopup = (e) => {
+      if (e.path[0].tagName !== "INPUT") {
+        setIsOpen(false);
+      }
+    };
+
+    document.body.addEventListener("click", closePopup);
+
+    return () => {
+      document.body.removeEventListener("click", closePopup);
+    };
+  }, []);
 
   const togglePopup = () => {
     setIsOpen(!isOpen);
