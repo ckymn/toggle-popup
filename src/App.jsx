@@ -1,8 +1,10 @@
+import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import "./style.css";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     const closePopup = (e) => {
@@ -10,7 +12,6 @@ function App() {
         setIsOpen(false);
       }
     };
-
     document.body.addEventListener("click", closePopup);
 
     return () => {
@@ -18,36 +19,38 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const getData = async () => {
+      const data = await axios
+        .get("https://form.jotform.com/222233527999062", {
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            "Access-Control-Allow-Origin": "*", // Could work and fix the previous problem, but not in all APIs
+          },
+        })
+        .then((response) => {
+          response;
+        });
+
+      setData(data);
+    };
+
+    console.log(getData());
+  }, data);
+
   const togglePopup = () => {
     setIsOpen(!isOpen);
   };
 
   return (
     <div>
-      <input type="button" value="Click to Open Popup" onClick={togglePopup} />
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
-      </p>
+      <input type="button" value="PP" onClick={togglePopup} />
       {isOpen && (
         <Popup
           content={
             <>
               <b>Design your Popup</b>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
-              </p>
+              <p>Hello, Guys</p>
               <button>Test button</button>
             </>
           }
@@ -58,14 +61,14 @@ function App() {
   );
 }
 
-const Popup = (props) => {
+const Popup = ({ handleClose, content }) => {
   return (
     <div className="popup-box">
       <div className="box">
-        <span className="close-icon" onClick={props.handleClose}>
+        <span className="close-icon" onClick={handleClose}>
           x
         </span>
-        {props.content}
+        {content}
       </div>
     </div>
   );
